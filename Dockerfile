@@ -1,5 +1,5 @@
-ARG CADDY_VERSION=latest
-FROM caddy:builder AS builder
+ARG CADDY_VERSION=2.6.2
+FROM caddy:${CADDY_VERSION} AS builder
 
 RUN xcaddy build \
     --with github.com/caddy-dns/cloudflare \
