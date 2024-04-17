@@ -18,8 +18,7 @@ jobs:
       - name: Install xcaddy
         run: |
           go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-          echo 'export PATH=$PATH:$HOME/go/bin' >> $HOME/.bashrc
-          source $HOME/.bashrc
+          echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> $GITHUB_PATH
           xcaddy --version
 
       - name: Login to Docker Hub
