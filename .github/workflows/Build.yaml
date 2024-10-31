@@ -71,4 +71,4 @@ jobs:
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
             ${{ env.DOCKER_IMAGE }}:github
-            ${{ env.DOCKER_IMAGE }}:${{ steps.caddy-version.outputs.version }}
+            ${{ env.DOCKER_IMAGE }}:github-${{ steps.caddy-version.outputs.version }}
