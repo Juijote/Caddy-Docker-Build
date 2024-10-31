@@ -1,12 +1,9 @@
 name: 构建 Caddy Docker 镜像并上传 Docker HUB
 
 on:
-  # 当发布新的 release 时触发
   release:
     types: [published]
-  # 手动触发工作流
   workflow_dispatch:
-  # 定时触发，每周检查一次 Caddy 更新
   schedule:
     - cron: '0 0 * * 0'
 
@@ -37,16 +34,21 @@ jobs:
         id: caddy-version
         run: |
           LATEST_VERSION=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | jq -r ".tag_name")
-          echo "version=${LATEST_VERSION#v}" >> $GITHUB_OUTPUT
+          # 删除 'v' 前缀
+          CADDY_VERSION=${LATEST_VERSION#v}
+          echo "version=${CADDY_VERSION}" >> $GITHUB_OUTPUT
+          echo "Latest Caddy version: ${CADDY_VERSION}"
 
       - name: Generate Dockerfile
+        env:
+          CADDY_VERSION: ${{ steps.caddy-version.outputs.version }}
         run: |
-          cat > Dockerfile << 'EOF'
-          FROM caddy:builder AS builder
-
+          cat > Dockerfile << EOF
+          ARG CADDY_VERSION=${CADDY_VERSION}
+          FROM caddy:\${CADDY_VERSION}-builder AS builder
           RUN xcaddy build \
-              --with github.com/caddy-dns/alidns \
               --with github.com/caddy-dns/cloudflare \
+              --with github.com/caddy-dns/alidns \
               --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
               --with github.com/mholt/caddy-webdav \
@@ -56,7 +58,7 @@ jobs:
               --with github.com/dulli/caddy-wol \
               --with github.com/Wafris/wafris-caddy
 
-          FROM caddy:latest
+          FROM caddy:\${CADDY_VERSION}
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
           EOF
 
@@ -66,6 +68,8 @@ jobs:
           context: .
           platforms: ${{ env.PLATFORMS }}
           push: true
+          build-args: |
+            CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
             ${{ env.DOCKER_IMAGE }}:github
             ${{ env.DOCKER_IMAGE }}:${{ steps.caddy-version.outputs.version }}
