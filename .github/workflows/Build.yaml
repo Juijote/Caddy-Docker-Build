@@ -49,7 +49,13 @@ jobs:
           RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare \
               --with github.com/caddy-dns/alidns \
-              --with github.com/caddy-dns/dnspod
+              --with github.com/caddy-dns/dnspod \
+              --with github.com/greenpau/caddy-security \
+              --with github.com/mholt/caddy-webdav \
+              --with github.com/mholt/caddy-dynamicdns \
+              --with github.com/mholt/caddy-ratelimit \
+              --with github.com/corazawaf/coraza-caddy/v2 \
+              --with github.com/dulli/caddy-wol
 
           FROM caddy:\${CADDY_VERSION}
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
