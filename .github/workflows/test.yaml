@@ -1,4 +1,4 @@
-name: test
+name: 测试
 
 on:
   workflow_dispatch:
@@ -66,5 +66,5 @@ jobs:
           build-args: |
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
-            ${{ env.DOCKER_IMAGE }}:github
-            ${{ env.DOCKER_IMAGE }}:${{ steps.caddy-version.outputs.version }}
+            ${{ env.DOCKER_IMAGE }}:test
+            ${{ env.DOCKER_IMAGE }}:test-${{ steps.caddy-version.outputs.version }}
