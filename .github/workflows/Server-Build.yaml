@@ -1,7 +1,9 @@
-name: 测试
+name: 构建 Caddy Docker 镜像并上传 Docker HUB - 服务器自用版
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
 
 env:
   DOCKER_IMAGE: juijote/caddy
