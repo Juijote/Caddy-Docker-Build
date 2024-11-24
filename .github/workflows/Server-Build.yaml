@@ -64,5 +64,5 @@ jobs:
           build-args: |
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
-            ${{ env.DOCKER_IMAGE }}:vps
-            ${{ env.DOCKER_IMAGE }}:vps-${{ steps.caddy-version.outputs.version }}
+            ${{ env.DOCKER_IMAGE }}:server
+            ${{ env.DOCKER_IMAGE }}:server-${{ steps.caddy-version.outputs.version }}
