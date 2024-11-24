@@ -1,4 +1,4 @@
-name: 构建 Caddy Docker 镜像并上传 Docker HUB
+name: 默认构建
 
 on:
   release:
