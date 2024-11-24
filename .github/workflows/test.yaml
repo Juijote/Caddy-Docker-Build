@@ -44,15 +44,10 @@ jobs:
           FROM caddy:\${CADDY_VERSION}-builder AS builder
           RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare \
-              --with github.com/caddy-dns/alidns \
               --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
-              --with github.com/mholt/caddy-webdav \
-              --with github.com/mholt/caddy-dynamicdns \
               --with github.com/mholt/caddy-ratelimit \
-              --with github.com/corazawaf/coraza-caddy/v2 \
-              --with github.com/dulli/caddy-wol \
-              --with github.com/ybizeul/caddy-logger-graphite
+              --with github.com/corazawaf/coraza-caddy/v2
 
           FROM caddy:\${CADDY_VERSION}
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
@@ -67,5 +62,5 @@ jobs:
           build-args: |
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
-            ${{ env.DOCKER_IMAGE }}:graphite
-            ${{ env.DOCKER_IMAGE }}:graphite-${{ steps.caddy-version.outputs.version }}
+            ${{ env.DOCKER_IMAGE }}:vps
+            ${{ env.DOCKER_IMAGE }}:vps-${{ steps.caddy-version.outputs.version }}
