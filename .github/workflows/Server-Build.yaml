@@ -1,4 +1,4 @@
-name: 构建 Caddy Docker 镜像并上传 Docker HUB - 服务器自用版
+name: 服务器自用构建
 
 on:
   workflow_dispatch:
