@@ -49,8 +49,7 @@ jobs:
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
-          ENV CGO_ENABLED=1
-          RUN xcaddy build \
+          RUN CGO_ENABLED=1 xcaddy build \
               --with github.com/caddy-dns/cloudflare \
               --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
