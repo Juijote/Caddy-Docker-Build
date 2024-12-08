@@ -45,13 +45,13 @@ jobs:
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
           
-          # 安装编译所需的工具和依赖
-          RUN apt-get update && apt-get install -y --no-install-recommends \
+          # 使用 apk 安装构建所需依赖
+          RUN apk add --no-cache \
               gcc \
               g++ \
               make \
-              libbrotli-dev \
-              && rm -rf /var/lib/apt/lists/*
+              brotli-dev \
+              musl-dev
 
           # 设置 CGO_ENABLED 环境变量并构建 Caddy
           ENV CGO_ENABLED=1
