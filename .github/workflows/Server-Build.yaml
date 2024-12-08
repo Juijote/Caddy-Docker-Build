@@ -15,11 +15,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
-      - name: Install Brotli
-        run: |
-          sudo apt-get update
-          sudo apt-get install libbrotli-dev
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -49,7 +44,18 @@ jobs:
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
-          RUN CGO_ENABLED=1 xcaddy build \
+          
+          # 安装编译所需的工具和依赖
+          RUN apt-get update && apt-get install -y --no-install-recommends \
+              gcc \
+              g++ \
+              make \
+              libbrotli-dev \
+              && rm -rf /var/lib/apt/lists/*
+
+          # 设置 CGO_ENABLED 环境变量并构建 Caddy
+          ENV CGO_ENABLED=1
+          RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare \
               --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
