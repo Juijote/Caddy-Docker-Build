@@ -93,7 +93,7 @@ jobs:
           COPY --from=builder /app/caddy-waf/rules.json /app/
           COPY --from=builder /app/caddy-waf/ip_blacklist.txt /app/
           COPY --from=builder /app/caddy-waf/dns_blacklist.txt /app/
-          COPY Caddyfile /app/
+          COPY /caddy-waf/Caddyfile /app/
 
           # Set the user to caddy for security
           RUN addgroup -S caddy && adduser -S -G caddy caddy
