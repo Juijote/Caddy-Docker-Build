@@ -44,17 +44,52 @@ jobs:
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
-          
+
+          RUN apk add --no-cache git wget && \
+                    go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+
+          WORKDIR /app
+
+          RUN git clone https://github.com/fabriziosalmi/caddy-waf.git
+
+          WORKDIR /app/caddy-waf
+
+          RUN go get -v github.com/caddyserver/caddy/v2 github.com/caddyserver/caddy/v2/caddyconfig/caddyfile github.com/caddyserver/caddy/v2/caddyconfig/httpcaddyfile github.com/caddyserver/caddy/v2 github.com/caddyserver/caddy/v2/modules/caddyhttp github.com/oschwald/maxminddb-golang github.com/fsnotify/fsnotify github.com/fabriziosalmi/caddy-waf && \
+
+          RUN go mod tidy
+
+          RUN wget https://git.io/GeoLite2-Country.mmdb
+
+          RUN rm -rf buildenv_*
+
           RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare \
               --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
               --with github.com/mholt/caddy-ratelimit \
               --with github.com/corazawaf/coraza-caddy/v2 \
-              --with github.com/fabriziosalmi/caddy-waf
+              --with github.com/fabriziosalmi/caddy-waf=./
 
           FROM caddy:\${CADDY_VERSION}
-          COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+          
+          WORKDIR /app
+          
+          COPY --from=builder /app/caddy-waf/caddy /usr/bin/caddy
+          COPY --from=builder /app/caddy-waf/GeoLite2-Country.mmdb /app/
+          COPY --from=builder /app/caddy-waf/rules.json /app/
+          COPY --from=builder /app/caddy-waf/ip_blacklist.txt /app/
+          COPY --from=builder /app/caddy-waf/dns_blacklist.txt /app/
+          COPY Caddyfile /app/
+
+          RUN addgroup -S caddy && adduser -S -G caddy caddy
+
+          RUN chown -R caddy:caddy /app
+
+          USER caddy
+
+          EXPOSE 8080
+
+          CMD ["caddy", "run", "--config", "/app/Caddyfile"]
           EOF
 
       - name: Build and push
