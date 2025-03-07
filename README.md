@@ -1,6 +1,6 @@
 # Caddy
 
-*构建 Caddy Docker 镜像集成插件并上传 [Docker HUB](https://hub.docker.com/repository/docker/juijote/caddy)*
+*构建 Caddy Docker 镜像集成插件并上传 [Docker HUB](https://hub.docker.com/r/juijote/caddy)*
 
 ## 添加以下插件：
 - [cloudflare](https://github.com/caddy-dns/cloudflare)
