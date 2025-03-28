@@ -68,3 +68,4 @@ jobs:
           tags: |
             ${{ env.DOCKER_IMAGE }}:server-brotli
             ${{ env.DOCKER_IMAGE }}:server-brotli-${{ steps.caddy-version.outputs.version }}
+            

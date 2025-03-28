@@ -1,9 +1,7 @@
-name: 服务器自用构建 - caddy-defender 支持
+name: 服务器自用构建 - 测试
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'
 
 env:
   DOCKER_IMAGE: juijote/caddy
@@ -46,11 +44,6 @@ jobs:
           FROM caddy:\${CADDY_VERSION}-builder AS builder
           
           RUN xcaddy build \
-              --with github.com/caddy-dns/cloudflare \
-              --with github.com/caddy-dns/dnspod \
-              --with github.com/greenpau/caddy-security \
-              --with github.com/mholt/caddy-ratelimit \
-              --with github.com/corazawaf/coraza-caddy/v2 \
               --with github.com/jasonlovesdoggo/caddy-defender
 
           FROM caddy:\${CADDY_VERSION}
@@ -66,6 +59,6 @@ jobs:
           build-args: |
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
-            ${{ env.DOCKER_IMAGE }}:server-defender
-            ${{ env.DOCKER_IMAGE }}:server-defender-${{ steps.caddy-version.outputs.version }}
+            ${{ env.DOCKER_IMAGE }}:server-test
+            ${{ env.DOCKER_IMAGE }}:server-test-${{ steps.caddy-version.outputs.version }}
             
