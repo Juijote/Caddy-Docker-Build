@@ -31,12 +31,12 @@ jobs:
           CADDY_VERSION: ${{ steps.caddy-version.outputs.version }}
         run: |
           cat > Dockerfile << EOF
-          ARG CADDY_VERSION=2.9.1
-          FROM caddy:2.9.1-builder AS builder
+          ARG CADDY_VERSION=2.8.4
+          FROM caddy:2.8.4-builder AS builder
           
           RUN xcaddy build --with github.com/jasonlovesdoggo/caddy-defender
 
-          FROM caddy:2.9.1
+          FROM caddy:2.8.4
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
           EOF
 
