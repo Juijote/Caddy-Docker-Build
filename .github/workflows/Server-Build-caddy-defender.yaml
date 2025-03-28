@@ -33,7 +33,9 @@ jobs:
         run: |
           LATEST_VERSION=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | jq -r ".tag_name")
           # 删除 'v' 前缀
-          CADDY_VERSION=${LATEST_VERSION#v}
+          #CADDY_VERSION=${LATEST_VERSION#v}
+          #指定版本
+          #CADDY_VERSION=2.9.1
           echo "version=${CADDY_VERSION}" >> $GITHUB_OUTPUT
           echo "Latest Caddy version: ${CADDY_VERSION}"
 
