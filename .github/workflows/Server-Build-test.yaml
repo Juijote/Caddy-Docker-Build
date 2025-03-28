@@ -2,6 +2,8 @@ name: 服务器自用构建 - 测试
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
 
 env:
   DOCKER_IMAGE: juijote/caddy
@@ -26,17 +28,32 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Get latest Caddy version
+        id: caddy-version
+        run: |
+          LATEST_VERSION=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | jq -r ".tag_name")
+          # 删除 'v' 前缀
+          CADDY_VERSION=${LATEST_VERSION#v}
+          echo "version=${CADDY_VERSION}" >> $GITHUB_OUTPUT
+          echo "Latest Caddy version: ${CADDY_VERSION}"
+
       - name: Generate Dockerfile
         env:
           CADDY_VERSION: ${{ steps.caddy-version.outputs.version }}
         run: |
           cat > Dockerfile << EOF
-          ARG CADDY_VERSION=2.8.4
-          FROM caddy:2.8.4-builder AS builder
+          ARG CADDY_VERSION=${CADDY_VERSION}
+          FROM caddy:\${CADDY_VERSION}-builder AS builder
           
-          RUN xcaddy build --with github.com/jasonlovesdoggo/caddy-defender
+          RUN xcaddy build \
+              --with github.com/caddy-dns/cloudflare \
+              --with github.com/caddy-dns/dnspod \
+              --with github.com/greenpau/caddy-security \
+              --with github.com/mholt/caddy-ratelimit \
+              --with github.com/corazawaf/coraza-caddy/v2 \
+              --with github.com/jasonlovesdoggo/caddy-defender
 
-          FROM caddy:2.8.4
+          FROM caddy:\${CADDY_VERSION}
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
           EOF
 
@@ -49,6 +66,5 @@ jobs:
           build-args: |
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
-            ${{ env.DOCKER_IMAGE }}:server-test
-            ${{ env.DOCKER_IMAGE }}:server-test-${{ steps.caddy-version.outputs.version }}
-            
+            ${{ env.DOCKER_IMAGE }}:server
+            ${{ env.DOCKER_IMAGE }}:server-${{ steps.caddy-version.outputs.version }}
