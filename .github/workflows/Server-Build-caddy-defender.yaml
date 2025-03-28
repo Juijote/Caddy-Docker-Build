@@ -67,4 +67,4 @@ jobs:
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
             ${{ env.DOCKER_IMAGE }}:server-defender
-            
+            ${{ env.DOCKER_IMAGE }}:server-defender-${{ steps.caddy-version.outputs.version }}
