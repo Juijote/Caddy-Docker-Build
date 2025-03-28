@@ -2,8 +2,6 @@ name: 服务器自用构建 - 测试
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'
 
 env:
   DOCKER_IMAGE: juijote/caddy
