@@ -26,27 +26,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Get latest Caddy version
-        id: caddy-version
-        run: |
-          LATEST_VERSION=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | jq -r ".tag_name")
-          # 删除 'v' 前缀
-          CADDY_VERSION=${LATEST_VERSION#v}
-          echo "version=${CADDY_VERSION}" >> $GITHUB_OUTPUT
-          echo "Latest Caddy version: ${CADDY_VERSION}"
-
       - name: Generate Dockerfile
         env:
           CADDY_VERSION: ${{ steps.caddy-version.outputs.version }}
         run: |
           cat > Dockerfile << EOF
-          ARG CADDY_VERSION=${CADDY_VERSION}
-          FROM caddy:\${CADDY_VERSION}-builder AS builder
+          ARG CADDY_VERSION=2.9.1
+          FROM caddy:2.9.1-builder AS builder
           
-          RUN xcaddy build \
-              --with github.com/jasonlovesdoggo/caddy-defender
+          RUN xcaddy build --with github.com/jasonlovesdoggo/caddy-defender
 
-          FROM caddy:\${CADDY_VERSION}
+          FROM caddy:2.9.1
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
           EOF
 
