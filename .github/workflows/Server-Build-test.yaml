@@ -55,6 +55,7 @@ jobs:
               --with github.com/sjtug/cerberus
 
           FROM caddy:\${CADDY_VERSION}
+          RUN apk add --no-cache tzdata
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
           EOF
 
