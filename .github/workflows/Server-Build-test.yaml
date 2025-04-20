@@ -43,8 +43,9 @@ jobs:
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
-          
-          RUN GOTOOLCHAIN=go1.24.1 xcaddy build \
+
+          RUN go get github.com/libdns/libdns@v0.2.3 && \
+              GOTOOLCHAIN=go1.24.1 xcaddy build \
               --with github.com/caddy-dns/cloudflare \
               --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
