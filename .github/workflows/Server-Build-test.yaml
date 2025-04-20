@@ -44,8 +44,7 @@ jobs:
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
 
-          RUN go install github.com/libdns/libdns@v0.2.1 && \
-              GOTOOLCHAIN=go1.24.1 xcaddy build \
+          RUN GOTOOLCHAIN=go1.24.2 xcaddy build \
               --with github.com/caddy-dns/cloudflare \
               --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
