@@ -31,8 +31,8 @@ jobs:
         run: |
           LATEST_VERSION=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | jq -r ".tag_name")
           # 删除 'v' 前缀
-          CADDY_VERSION=${LATEST_VERSION#v}
-          #CADDY_VERSION=2.9.1 # 指定版本
+          #CADDY_VERSION=${LATEST_VERSION#v}
+          CADDY_VERSION=2.9.1 # 指定版本
           echo "version=${CADDY_VERSION}" >> $GITHUB_OUTPUT
           echo "Latest Caddy version: ${CADDY_VERSION}"
 
@@ -45,7 +45,7 @@ jobs:
           FROM caddy:\${CADDY_VERSION}-builder AS builder
 
           RUN GOTOOLCHAIN=go1.24.2 xcaddy build \
-              --with github.com/caddy-dns/dnspod@v0.0.2 \
+              --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
               --with github.com/mholt/caddy-ratelimit \
               --with github.com/corazawaf/coraza-caddy/v2 \
