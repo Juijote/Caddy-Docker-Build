@@ -43,15 +43,6 @@ jobs:
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
-          
-          RUN mkdir /temp-mod && cd /temp-mod \
-              && go mod init temp \
-              && go get go.uber.org/zap \
-              golang.org/x/crypto/ed25519 \
-              github.com/dgraph-io/ristretto \
-              github.com/caddyserver/caddy/v2 \
-              github.com/caddyserver/caddy/v2/caddyconfig/caddyfile \
-              && rm -rf /temp-mod
 
           RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare@v0.1.0 \
@@ -60,8 +51,7 @@ jobs:
               --with github.com/mholt/caddy-ratelimit \
               --with github.com/corazawaf/coraza-caddy/v2 \
               --with github.com/ueffel/caddy-brotli \
-              --with github.com/jasonlovesdoggo/caddy-defender \
-              --with github.com/Juijote/caddy-cerberus@test
+              --with github.com/jasonlovesdoggo/caddy-defender
 
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
