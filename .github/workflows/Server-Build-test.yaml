@@ -52,7 +52,7 @@ jobs:
               --with github.com/corazawaf/coraza-caddy/v2 \
               --with github.com/ueffel/caddy-brotli \
               --with github.com/jasonlovesdoggo/caddy-defender \
-              --with github.com/Juijote/caddy-cerberus@f5c89e7
+              --with github.com/Juijote/caddy-cerberus@2c7a70e
 
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
