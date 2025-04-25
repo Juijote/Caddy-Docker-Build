@@ -52,7 +52,7 @@ jobs:
               --with github.com/corazawaf/coraza-caddy/v2 \
               --with github.com/ueffel/caddy-brotli \
               --with github.com/jasonlovesdoggo/caddy-defender \
-              --with github.com/Juijote/caddy-cerberus
+              --with github.com/Juijote/caddy-cerberus@test
 
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
@@ -68,6 +68,6 @@ jobs:
           build-args: |
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
-            ${{ env.DOCKER_IMAGE }}:server-test-cerberus
-            ${{ env.DOCKER_IMAGE }}:server-test-cerberus-${{ steps.caddy-version.outputs.version }}
+            ${{ env.DOCKER_IMAGE }}:server-test-cerberus-20250425
+            ${{ env.DOCKER_IMAGE }}:server-test-cerberus-20250425${{ steps.caddy-version.outputs.version }}
             
