@@ -1,4 +1,4 @@
-name: 服务器自用构建 - 测试
+name: 服务器自用构建 - 测试 - cloudflare
 
 on:
   workflow_dispatch:
