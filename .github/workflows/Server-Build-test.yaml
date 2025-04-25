@@ -44,6 +44,12 @@ jobs:
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
 
+          RUN go get go.uber.org/zap \
+              golang.org/x/crypto/ed25519 \
+              github.com/dgraph-io/ristretto \
+              github.com/caddyserver/caddy/v2 \
+              github.com/caddyserver/caddy/v2/caddyconfig/caddyfile
+
           RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare@v0.1.0 \
               --with github.com/caddy-dns/dnspod \
