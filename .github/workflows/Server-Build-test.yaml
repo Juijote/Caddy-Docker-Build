@@ -53,6 +53,7 @@ jobs:
               --with github.com/ueffel/caddy-brotli \
               --with github.com/caddyserver/transform-encoder \
               --with github.com/jasonlovesdoggo/caddy-defender \
+              --with github.com/lum8rjack/caddy-ja4h@9a858a9 \
               --with github.com/Juijote/caddy-cerberus
 
           FROM caddy:\${CADDY_VERSION}
