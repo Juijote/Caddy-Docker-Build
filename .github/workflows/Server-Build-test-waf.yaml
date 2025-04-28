@@ -44,33 +44,8 @@ jobs:
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
 
-          # 安装 caddy-waf 依赖
-          RUN apk add --no-cache git wget && \
-              go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-
-          # Set the working directory inside the container
-          WORKDIR /app
-
-          # Clone the caddy-waf repository
-          RUN git clone https://github.com/fabriziosalmi/caddy-waf.git
-
-          # Navigate into the caddy-waf directory
-          WORKDIR /app/caddy-waf
-
-          # Fetch and install the required Go modules (including Caddy v2)
-          RUN go get -v github.com/caddyserver/caddy/v2 github.com/caddyserver/caddy/v2/caddyconfig/caddyfile github.com/caddyserver/caddy/v2/caddyconfig/httpcaddyfile github.com/caddyserver/caddy/v2 github.com/caddyserver/caddy/v2/modules/caddyhttp github.com/oschwald/maxminddb-golang github.com/fsnotify/fsnotify github.com/fabriziosalmi/caddy-waf
-
-          # Clean up and update the go.mod file
-          RUN go mod tidy
-
-          # Download the GeoLite2 Country database
-          RUN wget https://git.io/GeoLite2-Country.mmdb
-
-          # Clean up previous build artifacts
-          RUN rm -rf buildenv_*
-
           RUN GOTOOLCHAIN=go1.24.2 xcaddy build \
-              --with github.com/fabriziosalmi/caddy-waf=./ \
+              --with github.com/fabriziosalmi/caddy-waf \
               --with github.com/caddy-dns/cloudflare@v0.1.0 \
               --with github.com/caddy-dns/dnspod \
               --with github.com/greenpau/caddy-security \
@@ -85,13 +60,6 @@ jobs:
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
-          COPY --from=builder /usr/bin/caddy/caddy-waf/GeoLite2-Country.mmdb /usr/bin/caddy/waf/
-          COPY --from=builder /usr/bin/caddy/caddy-waf/rules.json /usr/bin/caddy/waf/
-          COPY --from=builder /usr/bin/caddy/caddy-waf/ip_blacklist.txt /usr/bin/caddy/waf/
-          COPY --from=builder /usr/bin/caddy/caddy-waf/dns_blacklist.txt /usr/bin/caddy/waf/
-
-          RUN addgroup -S caddy && adduser -S -G caddy caddy
-          
           EOF
 
       - name: Build and push
