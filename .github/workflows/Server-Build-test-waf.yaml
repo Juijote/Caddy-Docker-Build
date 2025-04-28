@@ -47,19 +47,6 @@ jobs:
           # 安装 caddy-waf 依赖
           RUN apk add --no-cache git wget
 
-          # 克隆 caddy-waf 并初始化 Go 模块
-          RUN git clone https://github.com/fabriziosalmi/caddy-waf.git /tmp/caddy-waf && \
-              cd /tmp/caddy-waf && \
-              go mod tidy && \
-              go get github.com/caddyserver/caddy/v2 && \
-              go get github.com/caddyserver/caddy/v2/caddyconfig/caddyfile && \
-              go get github.com/caddyserver/caddy/v2/caddyconfig/httpcaddyfile && \
-              go get github.com/caddyserver/caddy/v2/modules/caddyhttp && \
-              go get github.com/oschwald/maxminddb-golang && \
-              go get github.com/fsnotify/fsnotify && \
-              go get -v github.com/fabriziosalmi/caddy-waf && \
-              go mod tidy
-
           # 下载 GeoLite2 数据库
           RUN wget -O /tmp/GeoLite2-Country.mmdb https://git.io/GeoLite2-Country.mmdb
 
