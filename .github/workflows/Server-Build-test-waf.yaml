@@ -46,7 +46,15 @@ jobs:
 
           RUN GOTOOLCHAIN=go1.24.2 xcaddy build \
               --with github.com/fabriziosalmi/caddy-waf \
-              --with github.com/caddy-dns/cloudflare@v0.1.0
+              --with github.com/caddy-dns/cloudflare@v0.1.0 \
+              --with github.com/greenpau/caddy-security \
+              --with github.com/mholt/caddy-ratelimit \
+              --with github.com/corazawaf/coraza-caddy/v2 \
+              --with github.com/ueffel/caddy-brotli \
+              --with github.com/caddyserver/transform-encoder \
+              --with github.com/jasonlovesdoggo/caddy-defender \
+              --with github.com/lum8rjack/caddy-ja4h@9a858a9 \
+              --with github.com/Juijote/caddy-cerberus
 
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
