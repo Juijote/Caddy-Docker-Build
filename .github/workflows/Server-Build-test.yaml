@@ -53,6 +53,7 @@ jobs:
               --with github.com/ueffel/caddy-brotli \
               --with github.com/caddyserver/transform-encoder \
               --with github.com/jasonlovesdoggo/caddy-defender \
+              --with github.com/Javex/caddy-fail2ban \
               --with github.com/lum8rjack/caddy-ja4h@9a858a9 \
               --with github.com/Juijote/caddy-cerberus
 
@@ -70,6 +71,6 @@ jobs:
           build-args: |
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
-            ${{ env.DOCKER_IMAGE }}:server-20250427
-            ${{ env.DOCKER_IMAGE }}:server-20250427${{ steps.caddy-version.outputs.version }}
+            ${{ env.DOCKER_IMAGE }}:server-20250428
+            ${{ env.DOCKER_IMAGE }}:server-20250428${{ steps.caddy-version.outputs.version }}
             
