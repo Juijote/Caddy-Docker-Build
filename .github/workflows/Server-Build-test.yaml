@@ -39,10 +39,13 @@ jobs:
       - name: Generate Dockerfile
         env:
           CADDY_VERSION: ${{ steps.caddy-version.outputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 访问私有库
         run: |
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
+
+          RUN git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
 
           RUN GOTOOLCHAIN=go1.24.2 xcaddy build \
               --with github.com/caddy-dns/cloudflare@v0.1.0 \
