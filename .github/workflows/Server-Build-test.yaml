@@ -54,7 +54,7 @@ jobs:
               --with github.com/caddyserver/transform-encoder \
               --with github.com/jasonlovesdoggo/caddy-defender \
               --with github.com/lum8rjack/caddy-ja4h@9a858a9 \
-              --with github.com/Juijote/caddy-cerberus
+              --with github.com/Juijote/caddy-cerberus@2fd01cf
 
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
@@ -70,6 +70,6 @@ jobs:
           build-args: |
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
-            ${{ env.DOCKER_IMAGE }}:server-20250510
-            ${{ env.DOCKER_IMAGE }}:server-20250510${{ steps.caddy-version.outputs.version }}
+            ${{ env.DOCKER_IMAGE }}:server-20250512
+            ${{ env.DOCKER_IMAGE }}:server-20250512${{ steps.caddy-version.outputs.version }}
             
