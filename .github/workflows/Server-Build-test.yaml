@@ -39,10 +39,13 @@ jobs:
       - name: Generate Dockerfile
         env:
           CADDY_VERSION: ${{ steps.caddy-version.outputs.version }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # 访问私有库
         run: |
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
+
+          RUN git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
 
           RUN GOTOOLCHAIN=go1.24.2 xcaddy build \
               --with github.com/caddy-dns/cloudflare@v0.1.0 \
@@ -54,7 +57,7 @@ jobs:
               --with github.com/caddyserver/transform-encoder \
               --with github.com/jasonlovesdoggo/caddy-defender \
               --with github.com/lum8rjack/caddy-ja4h@9a858a9 \
-              --with github.com/Juijote/caddy-cerberus@2fd01cf
+              --with github.com/Juijote/caddy-cerberus
 
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
