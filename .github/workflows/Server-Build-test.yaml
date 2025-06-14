@@ -47,7 +47,7 @@ jobs:
 
           RUN git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
 
-          RUN GOTOOLCHAIN=go1.24.2 xcaddy build \
+          RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare \
               --with github.com/caddy-dns/tencentcloud \
               --with github.com/greenpau/caddy-security \
