@@ -2,6 +2,7 @@ name: 服务器自用构建 - 测试
 
 on:
   workflow_dispatch:
+  push:
 
 env:
   DOCKER_IMAGE: juijote/caddy
