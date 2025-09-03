@@ -2,6 +2,7 @@ name: 服务器自用构建
 
 on:
   workflow_dispatch:
+  push:
 #  schedule:
 #    - cron: '0 0 * * 0'
 
@@ -34,25 +35,35 @@ jobs:
           LATEST_VERSION=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | jq -r ".tag_name")
           # 删除 'v' 前缀
           CADDY_VERSION=${LATEST_VERSION#v}
+          #CADDY_VERSION=2.9.1 # 指定版本
           echo "version=${CADDY_VERSION}" >> $GITHUB_OUTPUT
           echo "Latest Caddy version: ${CADDY_VERSION}"
 
       - name: Generate Dockerfile
         env:
           CADDY_VERSION: ${{ steps.caddy-version.outputs.version }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # 访问私有库
         run: |
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
-          
-          RUN GOTOOLCHAIN=go1.24.1 xcaddy build \
+
+          RUN git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+          RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare \
-              --with github.com/caddy-dns/dnspod \
+              --with github.com/caddy-dns/tencentcloud \
               --with github.com/greenpau/caddy-security \
               --with github.com/mholt/caddy-ratelimit \
-              --with github.com/corazawaf/coraza-caddy/v2
+              --with github.com/corazawaf/coraza-caddy/v2 \
+              --with github.com/ueffel/caddy-brotli \
+              --with github.com/caddyserver/transform-encoder \
+              --with pkg.jsn.cam/caddy-defender \
+              --with github.com/lum8rjack/caddy-ja4h \
+              --with github.com/Juijote/caddy-cerberus
 
           FROM caddy:\${CADDY_VERSION}
+          RUN apk add --no-cache tzdata
           COPY --from=builder /usr/bin/caddy /usr/bin/caddy
           EOF
 
