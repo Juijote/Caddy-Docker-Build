@@ -2,7 +2,7 @@ name: 服务器自用构建
 
 on:
   workflow_dispatch:
-  push:
+#  push:
 #  schedule:
 #    - cron: '0 0 * * 0'
 
