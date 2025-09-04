@@ -2,6 +2,9 @@ name: 服务器自用构建 - 测试 - waf
 
 on:
   workflow_dispatch:
+#  push:
+#  schedule:
+#    - cron: '0 0 * * 0'
 
 env:
   DOCKER_IMAGE: juijote/caddy
@@ -31,30 +34,34 @@ jobs:
         run: |
           LATEST_VERSION=$(curl -s "https://api.github.com/repos/caddyserver/caddy/releases/latest" | jq -r ".tag_name")
           # 删除 'v' 前缀
-          #CADDY_VERSION=${LATEST_VERSION#v}
-          CADDY_VERSION=2.9.1 # 指定版本
+          CADDY_VERSION=${LATEST_VERSION#v}
+          #CADDY_VERSION=2.9.1 # 指定版本
           echo "version=${CADDY_VERSION}" >> $GITHUB_OUTPUT
           echo "Latest Caddy version: ${CADDY_VERSION}"
 
       - name: Generate Dockerfile
         env:
           CADDY_VERSION: ${{ steps.caddy-version.outputs.version }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # 访问私有库
         run: |
           cat > Dockerfile << EOF
           ARG CADDY_VERSION=${CADDY_VERSION}
           FROM caddy:\${CADDY_VERSION}-builder AS builder
 
-          RUN GOTOOLCHAIN=go1.24.2 xcaddy build \
-              --with github.com/fabriziosalmi/caddy-waf \
-              --with github.com/caddy-dns/cloudflare@v0.1.0 \
-              --with github.com/caddy-dns/dnspod \
+          RUN git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+          RUN xcaddy build \
+              --with github.com/caddy-dns/cloudflare \
+              --with github.com/caddy-dns/tencentcloud \
               --with github.com/greenpau/caddy-security \
               --with github.com/mholt/caddy-ratelimit \
+              --with github.com/corazawaf/coraza-caddy/v2 \
               --with github.com/ueffel/caddy-brotli \
               --with github.com/caddyserver/transform-encoder \
-              --with github.com/jasonlovesdoggo/caddy-defender \
-              --with github.com/lum8rjack/caddy-ja4h@9a858a9 \
-              --with github.com/Juijote/caddy-cerberus
+              --with pkg.jsn.cam/caddy-defender \
+              --with github.com/lum8rjack/caddy-ja4h \
+              --with github.com/Juijote/caddy-cerberus \
+              --with github.com/fabriziosalmi/caddy-waf
 
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
@@ -71,5 +78,4 @@ jobs:
             CADDY_VERSION=${{ steps.caddy-version.outputs.version }}
           tags: |
             ${{ env.DOCKER_IMAGE }}:server-waf
-            ${{ env.DOCKER_IMAGE }}:server-waf${{ steps.caddy-version.outputs.version }}
-            
+            ${{ env.DOCKER_IMAGE }}:server-waf-${{ steps.caddy-version.outputs.version }}
