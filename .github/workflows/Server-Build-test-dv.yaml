@@ -48,6 +48,10 @@ jobs:
 
           RUN git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
 
+          # 设置直接从源获取,绕过 Go Proxy 缓存
+          ENV GOPROXY=direct
+          ENV GOSUMDB=off
+
           RUN xcaddy build \
               --with github.com/caddy-dns/cloudflare \
               --with github.com/caddy-dns/tencentcloud \
