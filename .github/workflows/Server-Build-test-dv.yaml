@@ -57,6 +57,7 @@ jobs:
               --with github.com/ueffel/caddy-brotli \
               --with github.com/caddyserver/transform-encoder \
               --with pkg.jsn.cam/caddy-defender \
+              --with github.com/lum8rjack/caddy-ja4h \
               --with github.com/Juijote/caddy-cerberus \
               --with github.com/Juijote/caddy-device-validator
 
