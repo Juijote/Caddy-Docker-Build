@@ -59,7 +59,7 @@ jobs:
               --with pkg.jsn.cam/caddy-defender \
               --with github.com/lum8rjack/caddy-ja4h \
               --with github.com/Juijote/caddy-cerberus \
-              --with github.com/Juijote/caddy-device-validator@44441c7cdc6637ea177b302f5b4f44efdc7d0e7f
+              --with github.com/Juijote/caddy-device-validator@ccb6c5b5e3154edbb1dc9d507a5860f0fbb31ea7
 
           FROM caddy:\${CADDY_VERSION}
           RUN apk add --no-cache tzdata
